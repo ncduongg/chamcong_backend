@@ -252,5 +252,6 @@ module.exports.addListVP = async (req, res, next) => {
   }
 };
 module.exports.getDataMayChamCong = (req, res, next) => {
-  res.status(200).json({ data: "duocne" });
+  const data = req.data;
+  res.status(200).json({ data });
 };
