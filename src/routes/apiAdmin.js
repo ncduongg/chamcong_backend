@@ -1,0 +1,14 @@
+const express = require("express");
+const router = express.Router();
+const apiAdminController = require("../app/controllers/apiAdminController");
+router.post("/writeFiletoCSDL", apiAdminController.writeFiletoCSDL);
+router.post("/loginAdmin", apiAdminController.loginAdmin);
+router.post("/getIdAndName", apiAdminController.getIdAndName);
+router.post("/uploadfile", apiAdminController.uploadfile);
+router.get("/readfileNOsql", apiAdminController.readFileNotImportData);
+router.get("/getListFile", apiAdminController.getListFile);
+router.post("/addListVP", apiAdminController.addListVP);
+router.get("/getListVP", apiAdminController.getListVP);
+router.post("/getDataMayChamCong", apiAdminController.getDataMayChamCong);
+router.get("/", apiAdminController.index);
+module.exports = router;

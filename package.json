@@ -1,0 +1,49 @@
+{
+  "name": "chamcong",
+  "version": "1.0.0",
+  "description": "cham-cong-node-js",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --inspect ./src/index.js",
+    "css": "node-sass --watch src/res/scss/ -output src/public/css/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ncduongg/cham_cong.git"
+  },
+  "keywords": [
+    "cham",
+    "cong",
+    "cham",
+    "cong",
+    "simthanglong"
+  ],
+  "author": "ncduong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ncduongg/cham_cong/issues"
+  },
+  "homepage": "https://github.com/ncduongg/cham_cong#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "date-fns": "^2.25.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.4",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
+    "mongoose": "^6.0.12",
+    "multer": "^1.4.3",
+    "node-xlsx": "^0.17.2"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "node-sass": "^6.0.1",
+    "nodemon": "^2.0.14"
+  }
+}
