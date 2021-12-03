@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const moment = require("moment");
+const { userFormat } = require("./userFormat/userFormat");
 module.exports.index = (req, res) => {
   res.send("apiHome");
   // res.render("layouts/search.ejs")
@@ -9,14 +10,8 @@ module.exports.getAllUser = (req, res) => {
   let queryParam = req.query;
   User.find({})
     .then((user) => {
-      const newArrayUsers = user.map((x) => {
-        const newUser = {
-          ...x,
-          date: x.date,
-        };
-        return newUser;
-      });
-      res.status(200).json{newArrayUsers}
+      //const newArray = userFormat(user);
+      res.status(200).json({ user });
     })
     .catch((err) => next(err));
 };
