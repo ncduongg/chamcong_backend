@@ -32,7 +32,10 @@ module.exports.getUserbyId = (req, res, next) => {
 module.exports.filterUser = async (req, res, next) => {
   // Chuyen gio +7 sang UTC 0 cua BE
   const dateStart = moment(req.query.dateStart).toISOString();
-  const dateEnd = moment(req.query.dateEnd).toISOString();
+  const dateEnd = moment(req.query.dateEnd)
+    .add(23, "hours")
+    .add(59, "minutes")
+    .toISOString();
   console.log(dateStart + " == " + dateEnd);
   const idUser = req.query.id;
   const idLocal = req.query.idLocal;
