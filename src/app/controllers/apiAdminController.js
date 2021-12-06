@@ -11,6 +11,7 @@ const uploadFileMiddleware = require("./file/uploadfile");
 const { DateUpdate } = require("./dateFormat/DateFormar");
 const vanphongModel = require("../models/vanphongModel");
 const { clearSpaceAndLowerString } = require("./textFormat/textFormat");
+const { convertDateToVietNam } = require("../../untils/mongosee");
 const moment = require("moment");
 module.exports.index = () => {
   res.send("apiAdmin");
@@ -133,7 +134,7 @@ module.exports.readFileNotImportData = async (req, res, next) => {
         res.status(200).json({
           success: "Bạn vừa Read file thành công",
           status: true,
-          data: dataAllNew,
+          data: convertDateToVietNam(dataAllNew),
         });
       });
   } catch (error) {

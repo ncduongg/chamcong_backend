@@ -11,8 +11,10 @@ module.exports.getAllUser = (req, res, next) => {
   User.find({})
     .lean()
     .then((user) => {
-      res.json({ date: convertDateToVietNam(user) });
+      const data = convertDateToVietNam(user);
+      res.json(data);
     })
+
     .catch((err) => next(err));
 };
 // [GET] / userById /filter/: slug
