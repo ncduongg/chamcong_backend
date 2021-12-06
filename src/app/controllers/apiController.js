@@ -31,11 +31,8 @@ module.exports.getUserbyId = (req, res, next) => {
 //filter?id=36&dateStart=2021-01-01&dateEnd=2021-01-05T23:59:00.000Z
 module.exports.filterUser = async (req, res, next) => {
   // Chuyen gio +7 sang UTC 0 cua BE
-  const dateStart = moment(req.query.dateStart).toISOString();
-  const dateEnd = moment(req.query.dateEnd)
-    .add(moment.duration("23:59"))
-    .toISOString();
-  console.log(dateStart + " == " + dateEnd);
+  const dateStart = moment(req.query.dateStart);
+  const dateEnd = moment(req.query.dateEnd).add(moment.duration("23:59"));
   const idUser = req.query.id;
   const idLocal = req.query.idLocal;
   if (idUser === "null") {
