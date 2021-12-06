@@ -6,7 +6,7 @@ const moment = require("moment");
 const User = new Schema({
   author: ObjectId,
   idUser: { type: String, default: 0 },
-  nameUser: { type: String, default: "Nhân Viên Chưa Được Nhập" },
+  nameUser: { type: String, default: "Nhân Viên Chưa Được Nhậpp" },
   date: { type: Date },
   status: { type: String },
   local: { type: String },
