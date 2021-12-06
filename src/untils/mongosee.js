@@ -4,7 +4,7 @@ module.exports = {
     const newUserArray = user.map((x) => {
       let newDefined = {
         ...x,
-        date: moment(x.date).format("YYYY-MM-DD HH:mm").toLocaleString(),
+        date: moment(x.date).format("YYYY-MM-DD HH:mm"),
       };
       return newDefined;
     });
