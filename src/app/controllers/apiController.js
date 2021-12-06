@@ -42,6 +42,7 @@ module.exports.filterUser = async (req, res, next) => {
         $lt: new Date(dateEnd).toUTCString(),
       },
     })
+      .lean()
       .where("local")
       .in(idLocal)
       .sort({ idUser: "asc", date: "asc" })
@@ -61,6 +62,7 @@ module.exports.filterUser = async (req, res, next) => {
         $lt: new Date(dateEnd).toUTCString(),
       },
     })
+      .lean()
       .where("local")
       .in(idLocal)
       .sort({ date: "asc" })
