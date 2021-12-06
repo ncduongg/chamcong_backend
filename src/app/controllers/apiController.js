@@ -40,8 +40,14 @@ module.exports.filterUser = async (req, res, next) => {
       .in(idLocal)
       .sort({ idUser: "asc", date: "asc" })
       .then((user) => {
+        const newUserArray = user.map((x) => {
+          const userUser = {
+            ...x,
+            date: moment(x.date).utc(7),
+          };
+        });
         if (user.length > 1) {
-          res.status(200).json(user);
+          res.status(200).json(newUserArray);
         } else res.json({ err: "Id nhân viên không đúng" });
       })
       .catch((err) => next(err));

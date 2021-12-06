@@ -193,7 +193,6 @@ module.exports.getIdAndName = async (req, res, next) => {
     })
     .catch((err) => next(err));
 };
-
 module.exports.getListVP = async (req, res, next) => {
   try {
     await vanphongModel
