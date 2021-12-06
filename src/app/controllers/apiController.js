@@ -1,14 +1,18 @@
 const User = require("../models/User");
 const moment = require("moment");
+const { convertDateToVietNam } = require("../../untils/mongosee");
 module.exports.index = (req, res) => {
   res.send("apiHome");
   // res.render("layouts/search.ejs")
 };
 // [GET] / api /all
-module.exports.getAllUser = (req, res) => {
+module.exports.getAllUser = (req, res, next) => {
   let queryParam = req.query;
   User.find({})
-    .then((user) => res.json(user))
+    .lean()
+    .then((user) => {
+      res.json({ date: convertDateToVietNam(user) });
+    })
     .catch((err) => next(err));
 };
 // [GET] / userById /filter/: slug
@@ -40,12 +44,6 @@ module.exports.filterUser = async (req, res, next) => {
       .in(idLocal)
       .sort({ idUser: "asc", date: "asc" })
       .then((user) => {
-        const newUserArray = user.map((x) => {
-          const userUser = {
-            ...x,
-            date: moment(x.date).utc(7),
-          };
-        });
         if (user.length > 1) {
           res.status(200).json(newUserArray);
         } else res.json({ err: "Id nhân viên không đúng" });
