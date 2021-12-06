@@ -20,6 +20,7 @@ module.exports.DateUpdate = (date) => {
   };
   const dateDone =
     objDate.year + objDate.month + objDate.day + objTime.hour + objTime.minute;
+  console.log(moment(dateDone, "YYYYMMDDhhmm").toISOString(true));
   return moment(dateDone, "YYYYMMDDhhmm")
     .utcOffset("+0700")
     .format("YYYY-MM-DD HH:mm");
