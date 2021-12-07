@@ -10,5 +10,6 @@ router.get("/getListFile", apiAdminController.getListFile);
 router.post("/addListVP", apiAdminController.addListVP);
 router.get("/getListVP", apiAdminController.getListVP);
 router.post("/getDataMayChamCong", apiAdminController.getDataMayChamCong);
+router.post("/readfilenhanvien", apiAdminController.readFileNhanVien);
 router.get("/", apiAdminController.index);
 module.exports = router;

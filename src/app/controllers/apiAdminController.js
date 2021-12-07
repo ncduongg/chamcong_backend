@@ -256,3 +256,31 @@ module.exports.getDataMayChamCong = (req, res, next) => {
   console.log(data);
   res.status(200).json({ data });
 };
+module.exports.readFileNhanVien = (req, res, next) => {
+  try {
+    const obj = xlsx.parse(process.cwd() + `//src//public//danhsachnv.xlsx`);
+    const array = obj[0].data.slice(1, obj[0].data.length);
+    const newArray = array.map((item) => {
+      return { idCC: item[6], name: item[1] };
+    });
+    res
+      .status(200)
+      .json({ message: "Đọc thành công", status: true, data: newArray });
+  } catch (error) {
+    res.status(401).json({ message: "Không đọc được file", status: false });
+  }
+};
+module.exports.writeFileNhanVien = (req, res, next) => {
+  try {
+    const obj = xlsx.parse(process.cwd() + `//src//public//danhsachnv.xlsx`);
+    const array = obj[0].data.slice(1, obj[0].data.length);
+    const newArray = array.map((item) => {
+      return { idCC: item[6], name: item[1] };
+    });
+    res
+      .status(200)
+      .json({ message: "Đọc thành công", status: true, data: newArray });
+  } catch (error) {
+    res.status(401).json({ message: "Không đọc được file", status: false });
+  }
+};
