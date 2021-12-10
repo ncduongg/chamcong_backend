@@ -275,7 +275,8 @@ module.exports.addListVP = async (req, res, next) => {
 };
 module.exports.getDataMayChamCong = (req, res, next) => {
   const data = req.body;
-  const Date = data.timestamp;
+  const DateChamCong = data.timestamp;
+  console.log(DateChamCong);
   res.status(200).json({ data });
 };
 module.exports.readFileNhanVien = (req, res, next) => {
