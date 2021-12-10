@@ -2,7 +2,7 @@ const path = require("path");
 const xlsx = require("node-xlsx");
 const AdminLogin = require("../models/AdminLogin");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const UserData = require("../models/UserData");
 const UrlFile = require("../models/fileModels");
 const TOKEN_SECRET = "Submit123";
 const mongoose = require("mongoose");
@@ -13,12 +13,14 @@ const vanphongModel = require("../models/vanphongModel");
 const { clearSpaceAndLowerString } = require("./textFormat/textFormat");
 const { convertDateToVietNam } = require("../../untils/mongosee");
 const moment = require("moment");
+const User = require("../models/User");
 module.exports.index = () => {
   res.send("apiAdmin");
 };
 module.exports.uploadfile = async (req, res) => {
   try {
     await uploadFileMiddleware(req, res);
+    const status = req.body.status;
     if (req.file == undefined) {
       return res.status(400).send({ message: "Hãy chọn file cần upload" });
     }
@@ -27,7 +29,8 @@ module.exports.uploadfile = async (req, res) => {
       filepath: req.file.path,
       filesize: req.file.size,
       filedir: req.file.destination,
-      filedate: moment().toLocaleString(7),
+      filedate: moment().toLocaleString(),
+      status: status,
     });
     await newFile.save();
     res.status(200).send({
@@ -37,6 +40,7 @@ module.exports.uploadfile = async (req, res) => {
         filepath: req.file.path,
         filesize: req.file.size,
         filedir: req.file.destination,
+        status: status,
       },
     });
   } catch (err) {
@@ -73,7 +77,7 @@ module.exports.writeFiletoCSDL = async (req, res) => {
           dataAll.push(...ArrayChamCong);
         });
         dataAll.forEach((ele) => {
-          const newArryObj = new User({
+          const newArryObj = new UserData({
             idUser: ele[0],
             nameUser: ele[1],
             date: DateUpdate(ele[2]),
@@ -146,15 +150,33 @@ module.exports.readFileNotImportData = async (req, res, next) => {
   }
 };
 module.exports.getListFile = (req, res, next) => {
-  UrlFile.find({})
-    .then((file) => {
-      res.status(200).json({ message: "Success", data: file });
+  try {
+    const status = req.body.status;
+    UrlFile.find({
+      status: status,
     })
-    .catch((err) => next());
+      .then((file) => {
+        if (file.length > 0) {
+          return res
+            .status(200)
+            .json({ message: "Success", status: true, data: file });
+        }
+        if (file.length === 0)
+          return res.status(404).json({
+            message: "Danh sách File trống",
+            status: false,
+            data: file,
+          });
+      })
+      .catch((err) => next());
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Không lấy được danh sách File", status: false });
+  }
 };
 module.exports.loginAdmin = async (req, res, next) => {
   try {
-    const data = req.body;
     if (!data.password)
       res.status(401).json({ message: "Tài Khoản không tồn tại" });
     await AdminLogin.find({
@@ -188,9 +210,9 @@ module.exports.getIdAndName = async (req, res, next) => {
   await User.find({})
     .where("local")
     .in(data)
+    .sort({ idUser: "asc" })
     .then((user) => {
-      const userArray = _.uniqBy(user, "idUser");
-      res.status(200).json({ user: userArray });
+      res.status(200).json({ user: user });
     })
     .catch((err) => next(err));
 };
@@ -229,7 +251,7 @@ module.exports.addListVP = async (req, res, next) => {
         });
         if (choce) {
           res.status(200).json({
-            message: `Có vẻ văn phòng [${data.nameVP}] đã bị trùng trong CSDL làC : ${vp}`,
+            message: `Có vẻ văn phòng [${data.nameVP}] đã bị trùng trong CSDL là : ${vp}`,
             status: false,
           });
         }
@@ -258,29 +280,115 @@ module.exports.getDataMayChamCong = (req, res, next) => {
 };
 module.exports.readFileNhanVien = (req, res, next) => {
   try {
-    const obj = xlsx.parse(process.cwd() + `//src//public//danhsachnv.xlsx`);
-    const array = obj[0].data.slice(1, obj[0].data.length);
-    const newArray = array.map((item) => {
-      return { idCC: item[6], name: item[1] };
+    const idfile = req.query;
+    const idfileNew = Object.entries(idfile);
+    const idDone = idfileNew.map((x) => {
+      return x[1];
     });
-    res
-      .status(200)
-      .json({ message: "Đọc thành công", status: true, data: newArray });
+    UrlFile.find({})
+      .where("_id")
+      .in(idDone)
+      .then((listFile) => {
+        const ArrayNhanVien = [];
+        listFile.forEach((itemX) => {
+          const obj = xlsx.parse(
+            process.cwd() + `//src//public//${itemX.filename}`
+          );
+          const array = obj[0].data.slice(1, obj[0].data.length);
+          const newArray = array.map((item) => {
+            return { idCC: item[0], name: item[1] + " " + item[2] };
+          });
+          ArrayNhanVien.push(newArray);
+        });
+        res.status(200).json({
+          message: "Đọc thành công",
+          status: true,
+          data: ArrayNhanVien,
+        });
+      });
   } catch (error) {
     res.status(401).json({ message: "Không đọc được file", status: false });
   }
 };
 module.exports.writeFileNhanVien = (req, res, next) => {
   try {
-    const obj = xlsx.parse(process.cwd() + `//src//public//danhsachnv.xlsx`);
-    const array = obj[0].data.slice(1, obj[0].data.length);
-    const newArray = array.map((item) => {
-      return { idCC: item[6], name: item[1] };
+    const idfile = req.body.idFile;
+    const idfileNew = Object.entries(idfile);
+    const idvanphong = req.body.idVanPhong[0];
+    const idDone = idfileNew.map((x) => {
+      return x[1];
     });
-    res
-      .status(200)
-      .json({ message: "Đọc thành công", status: true, data: newArray });
+
+    User.find({
+      local: idvanphong,
+    }).then((item) => {
+      UrlFile.find({})
+        .where("_id")
+        .in(idDone)
+        .then((listFile) => {
+          const ArrayNhanVien = [];
+          listFile.forEach((itemX) => {
+            const obj = xlsx.parse(
+              process.cwd() + `//src//public//${itemX.filename}`
+            );
+            const array = obj[0].data.slice(1, obj[0].data.length);
+            const newArray = array.map((item) => {
+              return { idCC: item[0], name: item[1] + " " + item[2] };
+            });
+            ArrayNhanVien.push(newArray);
+          });
+          ArrayNhanVien[0].forEach(async (Nv) => {
+            // new : true de tra lai kq sau khi thuc hien
+            if (item.length > 0) {
+              await User.findOneAndUpdate(
+                { idUser: Nv.idCC, local: idvanphong },
+                { nameUser: Nv.name },
+                {
+                  new: true,
+                  upsert: true,
+                  setDefaultsOnInsert: false,
+                }
+              );
+            }
+            if (item.length === 0) {
+              const newUser = new User({
+                idUser: Nv.idCC,
+                nameUser: Nv.name,
+                local: idvanphong,
+              });
+              newUser.save();
+            }
+          });
+          res.status(200).json({
+            message: "Thêm thành công File SD Nhân viên vào CSDL",
+            status: true,
+            data: ArrayNhanVien,
+          });
+        });
+    });
   } catch (error) {
     res.status(401).json({ message: "Không đọc được file", status: false });
+  }
+};
+module.exports.UpdateNhanVien = async (req, res, next) => {
+  try {
+    const nv = req.body;
+    await User.findOneAndUpdate(
+      {
+        idUser: nv.idUser,
+        local: nv.local,
+      },
+      {
+        nameUser: nv.nameUser,
+      }
+    );
+    res.status(200).json({
+      message: `Bạn đã sửa tên Nhân Viên ID : ${nv.idUser} thành ${nv.nameUser}`,
+      status: true,
+    });
+  } catch (error) {
+    res
+      .status(401)
+      .json({ message: "Sửa lỗi, vui lòng xem lại", status: false });
   }
 };

@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const UserData = require("../models/UserData");
 const moment = require("moment");
 const { convertDateToVietNam } = require("../../untils/mongosee");
 module.exports.index = (req, res) => {
@@ -8,7 +8,7 @@ module.exports.index = (req, res) => {
 // [GET] / api /all
 module.exports.getAllUser = (req, res, next) => {
   let queryParam = req.query;
-  User.find({})
+  UserData.find({})
     .lean()
     .then((user) => {
       const data = convertDateToVietNam(user);
@@ -20,7 +20,7 @@ module.exports.getAllUser = (req, res, next) => {
 // [GET] / userById /filter/: slug
 module.exports.getUserbyId = (req, res, next) => {
   const idUser = req.params.slug;
-  User.find({ idUser: idUser })
+  UserData.find({ idUser: idUser })
     .then((user) => {
       if (user.length > 1) res.json({ data: user });
       else res.json({ err: "Id nhân viên không đúng" });
@@ -36,7 +36,7 @@ module.exports.filterUser = async (req, res, next) => {
   const idUser = req.query.id;
   const idLocal = req.query.idLocal;
   if (idUser === "null") {
-    await User.find({
+    await UserData.find({
       date: {
         $gte: new Date(dateStart).toUTCString(),
         $lt: new Date(dateEnd).toUTCString(),
@@ -55,7 +55,7 @@ module.exports.filterUser = async (req, res, next) => {
       .catch((err) => next(err));
   }
   if (idUser !== "null") {
-    await User.find({
+    await UserData.find({
       idUser: idUser,
       date: {
         $gte: new Date(dateStart).toUTCString(),
