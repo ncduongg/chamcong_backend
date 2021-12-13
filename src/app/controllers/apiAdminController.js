@@ -180,6 +180,7 @@ module.exports.getListFile = (req, res, next) => {
 };
 module.exports.loginAdmin = async (req, res, next) => {
   try {
+    const data = req.body;
     if (!data.password)
       res.status(401).json({ message: "Tài Khoản không tồn tại" });
     await AdminLogin.find({

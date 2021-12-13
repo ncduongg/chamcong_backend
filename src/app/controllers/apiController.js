@@ -38,8 +38,8 @@ module.exports.filterUser = async (req, res, next) => {
   if (idUser === "null") {
     await UserData.find({
       date: {
-        $gte: new Date(dateStart).toUTCString(),
-        $lt: new Date(dateEnd).toUTCString(),
+        $gte: dateStart,
+        $lt: dateEnd,
       },
     })
       .lean()
