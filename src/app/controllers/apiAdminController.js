@@ -278,6 +278,7 @@ module.exports.addListVP = async (req, res, next) => {
 module.exports.getDataMayChamCong = (req, res, next) => {
   try {
     const data = req.body;
+    console.log(data);
     const DateChamCong = data.timestamp;
     const dateDone =
       DateChamCong.year +
