@@ -1,5 +1,6 @@
 // dau vao 10/07/2021 17:17 ==  dau ra 2021-10-07T07:31:00.000Z
 const moment = require("moment");
+const { AddNumberZeroInTime } = require("../textFormat/textFormat");
 module.exports.DateUpdate = (date) => {
   const dateString = date;
   const dateArray = dateString.split(" ");
@@ -24,4 +25,15 @@ module.exports.DateUpdate = (date) => {
 };
 module.exports.UTCtoGMT = (UTC) => {
   const dateGTMNew = UTC.get;
+};
+module.exports.DateChamCong = (dataTime) => {
+  console.log(dataTime);
+  const dateDone =
+    dataTime.year.toString() +
+    AddNumberZeroInTime(dataTime.month.toString()) +
+    AddNumberZeroInTime(dataTime.day.toString()) +
+    AddNumberZeroInTime(dataTime.hours.toString()) +
+    AddNumberZeroInTime(dataTime.minutes.toString());
+  //console.log(dateDone);
+  return dateDone;
 };

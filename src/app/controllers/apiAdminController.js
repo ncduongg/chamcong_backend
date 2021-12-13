@@ -8,9 +8,12 @@ const TOKEN_SECRET = "Submit123";
 const mongoose = require("mongoose");
 var _ = require("lodash");
 const uploadFileMiddleware = require("./file/uploadfile");
-const { DateUpdate } = require("./dateFormat/DateFormar");
+const { DateUpdate, DateChamCong } = require("./dateFormat/DateFormar");
 const vanphongModel = require("../models/vanphongModel");
-const { clearSpaceAndLowerString } = require("./textFormat/textFormat");
+const {
+  clearSpaceAndLowerString,
+  EditID_deviceID,
+} = require("./textFormat/textFormat");
 const { convertDateToVietNam } = require("../../untils/mongosee");
 const moment = require("moment");
 const User = require("../models/User");
@@ -131,7 +134,7 @@ module.exports.readFileNotImportData = async (req, res, next) => {
             nameUser: ele[1],
             date: DateUpdate(ele[2]),
             status: ele[3],
-            local: "SimThangLong",
+            local: "null",
           };
           dataAllNew.push(newArryObj);
         });
@@ -278,17 +281,29 @@ module.exports.addListVP = async (req, res, next) => {
 module.exports.getDataMayChamCong = (req, res, next) => {
   try {
     const data = req.body;
-    console.log(data);
-    const DateChamCong = data.timestamp;
-    const dateDone =
-      DateChamCong.year +
-      DateChamCong.month +
-      DateChamCong.day +
-      DateChamCong.hours +
-      DateChamCong.minutes;
-    const dateIOS = moment(dateDone, "YYYYMMDDhhmm").toISOString(true);
-    res.status(200).json({ data });
-    console.log(dateIOS);
+    const chamcong = DateChamCong(data.timestamp);
+    const idChamCong = data.enrollNumber;
+    const deviceID = EditID_deviceID(data.deviceID);
+    const dateIOS = moment(chamcong, "YYYYMMDDhhmm").toISOString(true);
+    vanphongModel
+      .find({
+        deviceID: deviceID,
+      })
+      .then((vp) => {
+        User.find({
+          idUser: idChamCong,
+        }).then((user) => {
+          const newArryObj = new UserData({
+            idUser: idChamCong,
+            nameUser: user[0].nameUser,
+            date: dateIOS,
+            status: "Binh Thuong",
+            local: vp[0]._id,
+          });
+          newArryObj.save();
+        });
+      });
+    res.status(200).json({ message: " 22 Thanh Cong", status: true });
   } catch (error) {
     res.status(404).json({ message: "Xay ra loi", status: false, error });
   }
@@ -311,7 +326,11 @@ module.exports.readFileNhanVien = (req, res, next) => {
           );
           const array = obj[0].data.slice(1, obj[0].data.length);
           const newArray = array.map((item) => {
-            return { idCC: item[0], name: item[1] + " " + item[2] };
+            const tensau = typeof item[2] === "undefined" ? "" : item[2];
+            return {
+              idCC: item[0],
+              name: item[1] + " " + tensau,
+            };
           });
           ArrayNhanVien.push(newArray);
         });
@@ -384,6 +403,30 @@ module.exports.writeFileNhanVien = (req, res, next) => {
   } catch (error) {
     res.status(401).json({ message: "Không đọc được file", status: false });
   }
+};
+module.exports.AddNhanVien = (req, res, next) => {
+  const data = req.body;
+  User.find({
+    idUser: data.idCC,
+  }).then((user) => {
+    if (user.length > 0) {
+      res.status(200).json({
+        message: `ID [${data.idCC}] được gán với nhân viên ${user[0].nameUser}, nếu muốn sửa hãy chọn chức năng sửa`,
+        status: false,
+      });
+    } else {
+      const newUser = new User({
+        idUser: data.idCC,
+        nameUser: data.name,
+        local: data.idvanphong,
+      });
+      newUser.save();
+      res.status(200).json({
+        message: `Thêm thành công nhân viên [${data.idCC}] ${data.name}`,
+        status: true,
+      });
+    }
+  });
 };
 module.exports.UpdateNhanVien = async (req, res, next) => {
   try {
