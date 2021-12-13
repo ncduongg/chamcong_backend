@@ -367,7 +367,8 @@ module.exports.writeFileNhanVien = (req, res, next) => {
             );
             const array = obj[0].data.slice(1, obj[0].data.length);
             const newArray = array.map((item) => {
-              return { idCC: item[0], name: item[1] + " " + item[2] };
+              const tensau = typeof item[2] === "undefined" ? "" : item[2];
+              return { idCC: item[0], name: item[1] + " " + tensau };
             });
             ArrayNhanVien.push(newArray);
           });
