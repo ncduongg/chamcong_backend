@@ -47,7 +47,7 @@ module.exports.filterUser = async (req, res, next) => {
       .in(idLocal)
       .sort({ idUser: "asc", date: "asc" })
       .then((user) => {
-        if (user.length > 0) {
+        if (user.length >= 1) {
           const data = convertDateToVietNam(user);
           res.status(200).json(data);
         } else res.json({ err: "Id nhân viên không đúng" });
@@ -58,8 +58,8 @@ module.exports.filterUser = async (req, res, next) => {
     await UserData.find({
       idUser: idUser,
       date: {
-        $gte: new Date(dateStart).toUTCString(),
-        $lt: new Date(dateEnd).toUTCString(),
+        $gte: dateStart,
+        $lt: dateEnd,
       },
     })
       .lean()
@@ -67,7 +67,8 @@ module.exports.filterUser = async (req, res, next) => {
       .in(idLocal)
       .sort({ date: "asc" })
       .then((user) => {
-        if (user.length > 1) {
+        console.log(user);
+        if (user.length >= 1) {
           const data = convertDateToVietNam(user);
           res.status(200).json(data);
         } else res.json({ err: "Id nhân viên không đúng" });
