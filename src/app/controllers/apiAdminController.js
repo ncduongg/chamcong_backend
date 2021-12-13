@@ -286,11 +286,11 @@ module.exports.getDataMayChamCong = (req, res, next) => {
       DateChamCong.hours +
       DateChamCong.minutes;
     const dateIOS = moment(dateDone, "YYYYMMDDhhmm").toISOString(true);
+    res.status(200).json({ data });
     console.log(dateIOS);
   } catch (error) {
     res.status(404).json({ message: "Xay ra loi", status: false, error });
   }
-  res.status(200).json({ data });
 };
 module.exports.readFileNhanVien = (req, res, next) => {
   try {
