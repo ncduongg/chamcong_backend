@@ -234,6 +234,7 @@ module.exports.getListVP = async (req, res, next) => {
 };
 module.exports.addListVP = async (req, res, next) => {
   const data = req.body;
+  console.log(data);
   try {
     await vanphongModel
       .find()
@@ -259,6 +260,7 @@ module.exports.addListVP = async (req, res, next) => {
           const newVanPhong = new vanphongModel({
             nameVP: data.nameVP,
             status: data.status,
+            deviceID: data.deviceID,
           });
           newVanPhong.save();
           res.status(200).json({
@@ -274,9 +276,20 @@ module.exports.addListVP = async (req, res, next) => {
   }
 };
 module.exports.getDataMayChamCong = (req, res, next) => {
-  const data = req.body;
-  const DateChamCong = data.timestamp;
-  console.log(data);
+  try {
+    const data = req.body;
+    const DateChamCong = data.timestamp;
+    const dateDone =
+      DateChamCong.year +
+      DateChamCong.month +
+      DateChamCong.day +
+      DateChamCong.hours +
+      DateChamCong.minutes;
+    const dateIOS = moment(dateDone, "YYYYMMDDhhmm").toISOString(true);
+    console.log(dateIOS);
+  } catch (error) {
+    res.status(404).json({ message: "Xay ra loi", status: false, error });
+  }
   res.status(200).json({ data });
 };
 module.exports.readFileNhanVien = (req, res, next) => {

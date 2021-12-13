@@ -4,7 +4,7 @@ const ObjectId = Schema.ObjectId;
 const vanphongModel = new Schema({
   author: ObjectId,
   nameVP: { type: String, trim: true },
-  deviceID: { type: Array, trim: true },
+  deviceID: { type: String, trim: true },
   status: { type: String, trim: true },
 });
 module.exports = mongoose.model("vanphongModel", vanphongModel);
