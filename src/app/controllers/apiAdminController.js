@@ -299,7 +299,7 @@ module.exports.getDataMayChamCong = (req, res, next) => {
             idUser: idChamCong,
             nameUser: user[0].nameUser,
             date: dateIOS,
-            status: "Binh Thuong",
+            status: "Bình Thường",
             local: vp[0]._id,
           });
           newArryObj.save();
