@@ -165,7 +165,7 @@ module.exports.getListFile = (req, res, next) => {
             .json({ message: "Success", status: true, data: file });
         }
         if (file.length === 0)
-          return res.status(404).json({
+          return res.status(200).json({
             message: "Danh sách File trống",
             status: false,
             data: file,
