@@ -293,6 +293,7 @@ module.exports.getDataMayChamCong = (req, res, next) => {
       .then((vp) => {
         User.find({
           idUser: idChamCong,
+          local: vp[0]._id,
         }).then((user) => {
           const newArryObj = new UserData({
             idUser: idChamCong,
