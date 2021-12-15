@@ -291,21 +291,31 @@ module.exports.getDataMayChamCong = (req, res, next) => {
         deviceID: deviceID,
       })
       .then((vp) => {
-        User.find({
-          idUser: idChamCong,
-          local: vp[0]._id,
-        }).then((user) => {
-          const newArryObj = new UserData({
+        if (vp.length >= 1) {
+          User.find({
             idUser: idChamCong,
-            nameUser: user[0].nameUser,
-            date: dateIOS,
-            status: "Bình Thường",
             local: vp[0]._id,
+          }).then((user) => {
+            const newArryObj = new UserData({
+              idUser: idChamCong,
+              nameUser: user[0].nameUser,
+              date: dateIOS,
+              status: "Bình Thường",
+              local: vp[0]._id,
+            });
+            newArryObj.save();
           });
-          newArryObj.save();
-        });
+          if (vp.length === 0) {
+            res
+              .status(200)
+              .json({
+                message: "Không thêm được, có vẻ ID máy không tồn tại",
+                status: true,
+              });
+          }
+        }
       });
-    res.status(200).json({ message: " 22 Thanh Cong", status: true });
+    res.status(200).json({ message: "22 Thanh Cong", status: true });
   } catch (error) {
     res.status(404).json({ message: "Xay ra loi", status: false, error });
   }
@@ -408,8 +418,9 @@ module.exports.writeFileNhanVien = (req, res, next) => {
     res.status(401).json({ message: "Không đọc được file", status: false });
   }
 };
-module.exports.AddNhanVien = (req, res, next) => {
+module.exports.Add_RemoveNhanVien = (req, res, next) => {
   const data = req.body;
+  // const active = data.active;
   User.find({
     idUser: data.idCC,
   }).then((user) => {
@@ -431,6 +442,52 @@ module.exports.AddNhanVien = (req, res, next) => {
       });
     }
   });
+  // if (active === 0) {
+  //   User.find({
+  //     idUser: data.idCC,
+  //   }).then((user) => {
+  //     if (user.length > 0) {
+  //       res.status(200).json({
+  //         message: `ID [${data.idCC}] được gán với nhân viên ${user[0].nameUser}, nếu muốn sửa hãy chọn chức năng sửa`,
+  //         status: false,
+  //       });
+  //     } else {
+  //       const newUser = new User({
+  //         idUser: data.idCC,
+  //         nameUser: data.name,
+  //         local: data.idvanphong,
+  //       });
+  //       newUser.save();
+  //       res.status(200).json({
+  //         message: `Thêm thành công nhân viên [${data.idCC}] ${data.name}`,
+  //         status: true,
+  //       });
+  //     }
+  //   });
+  // }
+  // if (active === 1) {
+  //   User.find({
+  //     idUser: data.idCC,
+  //   }).then((user) => {
+  //     if (user.length === 0) {
+  //       res.status(200).json({
+  //         message: `ID [${data.idCC}] được gán với nhân viên ${user[0].nameUser}, nếu muốn sửa hãy chọn chức năng sửa`,
+  //         status: false,
+  //       });
+  //     } else {
+  //       const newUser = new User({
+  //         idUser: data.idCC,
+  //         nameUser: data.name,
+  //         local: data.idvanphong,
+  //       });
+  //       newUser.save();
+  //       res.status(200).json({
+  //         message: `Thêm thành công nhân viên [${data.idCC}] ${data.name}`,
+  //         status: true,
+  //       });
+  //     }
+  //   });
+  // }
 };
 module.exports.UpdateNhanVien = async (req, res, next) => {
   try {

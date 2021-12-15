@@ -13,6 +13,6 @@ router.post("/getDataMayChamCong", apiAdminController.getDataMayChamCong);
 router.get("/readfilenhanvien", apiAdminController.readFileNhanVien);
 router.post("/writeFileNhanVienToCSDL", apiAdminController.writeFileNhanVien);
 router.post("/UpdateNhanVien", apiAdminController.UpdateNhanVien);
-router.post("/AddNhanVien", apiAdminController.AddNhanVien);
+router.post("/Add_RemoveNhanVien", apiAdminController.Add_RemoveNhanVien);
 router.get("/", apiAdminController.index);
 module.exports = router;
