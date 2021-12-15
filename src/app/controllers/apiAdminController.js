@@ -306,10 +306,14 @@ module.exports.getDataMayChamCong = (req, res, next) => {
               newArryObj.save();
             }
             if (user.length === 0) {
-              res.status(200).json({
-                message: "Không thêm được, có vẻ NV không tồn tại",
-                status: false,
+              const newArryObj = new UserData({
+                idUser: idChamCong,
+                nameUser: "Không rõ tên",
+                date: dateIOS,
+                status: "Bình Thường",
+                local: vp[0]._id,
               });
+              newArryObj.save();
             }
           });
           if (vp.length === 0) {
