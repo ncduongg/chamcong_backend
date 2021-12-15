@@ -238,7 +238,6 @@ module.exports.getListVP = async (req, res, next) => {
 };
 module.exports.addListVP = async (req, res, next) => {
   const data = req.body;
-  console.log(data);
   try {
     await vanphongModel
       .find()
@@ -296,22 +295,28 @@ module.exports.getDataMayChamCong = (req, res, next) => {
             idUser: idChamCong,
             local: vp[0]._id,
           }).then((user) => {
-            const newArryObj = new UserData({
-              idUser: idChamCong,
-              nameUser: user[0].nameUser,
-              date: dateIOS,
-              status: "Bình Thường",
-              local: vp[0]._id,
-            });
-            newArryObj.save();
+            if (user.length >= 1) {
+              const newArryObj = new UserData({
+                idUser: idChamCong,
+                nameUser: user[0].nameUser,
+                date: dateIOS,
+                status: "Bình Thường",
+                local: vp[0]._id,
+              });
+              newArryObj.save();
+            }
+            if (user.length === 0) {
+              res.status(200).json({
+                message: "Không thêm được, có vẻ NV không tồn tại",
+                status: false,
+              });
+            }
           });
           if (vp.length === 0) {
-            res
-              .status(200)
-              .json({
-                message: "Không thêm được, có vẻ ID máy không tồn tại",
-                status: true,
-              });
+            res.status(200).json({
+              message: "Không thêm được, có vẻ ID máy không tồn tại",
+              status: false,
+            });
           }
         }
       });
