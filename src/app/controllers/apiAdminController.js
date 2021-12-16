@@ -308,7 +308,7 @@ module.exports.getDataMayChamCong = (req, res, next) => {
             if (user.length === 0) {
               const newArryObj = new UserData({
                 idUser: idChamCong,
-                nameUser: "Không rõ tên",
+                nameUser: "Không rõ tên NhanVien",
                 date: dateIOS,
                 status: "Bình Thường",
                 local: vp[0]._id,
