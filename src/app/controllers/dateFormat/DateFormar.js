@@ -27,7 +27,6 @@ module.exports.UTCtoGMT = (UTC) => {
   const dateGTMNew = UTC.get;
 };
 module.exports.DateChamCong = (dataTime) => {
-  console.log(dataTime);
   const dateDone =
     dataTime.year.toString() +
     AddNumberZeroInTime(dataTime.month.toString()) +

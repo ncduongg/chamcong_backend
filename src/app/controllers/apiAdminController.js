@@ -306,6 +306,7 @@ module.exports.getDataMayChamCong = (req, res, next) => {
               newArryObj.save();
             }
             if (user.length === 0) {
+              console.log("-----");
               const newArryObj = new UserData({
                 idUser: idChamCong,
                 nameUser: "Không rõ tên NhanVien",

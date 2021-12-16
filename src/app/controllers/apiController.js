@@ -67,7 +67,6 @@ module.exports.filterUser = async (req, res, next) => {
       .in(idLocal)
       .sort({ date: "asc" })
       .then((user) => {
-        console.log(user);
         if (user.length >= 1) {
           const data = convertDateToVietNam(user);
           res.status(200).json(data);
